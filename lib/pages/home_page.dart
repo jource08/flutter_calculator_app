@@ -54,11 +54,13 @@ class HomePage extends StatelessWidget {
             _buildButton(mycounter,
                 text: "AC",
                 buttonBgColor: operatorColor,
-                textColor: orangeColor),
+                textColor: orangeColor,
+                isInput: false),
             _buildButton(mycounter,
                 text: "<",
                 buttonBgColor: operatorColor,
-                textColor: orangeColor),
+                textColor: orangeColor,
+                isInput: false),
             _buildButton(mycounter,
                 text: "", buttonBgColor: Colors.transparent),
             _buildButton(mycounter,
@@ -108,7 +110,12 @@ class HomePage extends StatelessWidget {
                 textColor: orangeColor),
             _buildButton(mycounter, text: "0"),
             _buildButton(mycounter, text: "."),
-            _buildButton(mycounter, text: "=", buttonBgColor: orangeColor),
+            _buildButton(
+              mycounter,
+              text: "=",
+              buttonBgColor: orangeColor,
+              isInput: false,
+            ),
           ],
         )
       ],
@@ -140,7 +147,22 @@ class HomePage extends StatelessWidget {
         onPressed: () {
           if (isInput) {
             counterbloc.changeInput("${counterbloc.state['input']}$text");
-          } else {}
+          } else {
+            switch (text) {
+              case "AC":
+                counterbloc.changeInput("0");
+                break;
+              case "<":
+                if (counterbloc.state['input'].length > 1) {
+                  counterbloc.changeInput(counterbloc.state['input']
+                      .substring(0, counterbloc.state['input'].length - 1));
+                } else {
+                  counterbloc.changeInput("0");
+                }
+                break;
+              default:
+            }
+          }
         },
       ),
     ));
