@@ -51,16 +51,17 @@ class HomePage extends StatelessWidget {
         // button area
         Row(
           children: [
-            _buildButton(
+            _buildButton(mycounter,
                 text: "AC",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
-            _buildButton(
+            _buildButton(mycounter,
                 text: "<",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
-            _buildButton(text: "", buttonBgColor: Colors.transparent),
-            _buildButton(
+            _buildButton(mycounter,
+                text: "", buttonBgColor: Colors.transparent),
+            _buildButton(mycounter,
                 text: "/",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
@@ -68,10 +69,10 @@ class HomePage extends StatelessWidget {
         ),
         Row(
           children: [
-            _buildButton(text: "7"),
-            _buildButton(text: "8"),
-            _buildButton(text: "9"),
-            _buildButton(
+            _buildButton(mycounter, text: "7"),
+            _buildButton(mycounter, text: "8"),
+            _buildButton(mycounter, text: "9"),
+            _buildButton(mycounter,
                 text: "x",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
@@ -79,10 +80,10 @@ class HomePage extends StatelessWidget {
         ),
         Row(
           children: [
-            _buildButton(text: "4"),
-            _buildButton(text: "5"),
-            _buildButton(text: "6"),
-            _buildButton(
+            _buildButton(mycounter, text: "4"),
+            _buildButton(mycounter, text: "5"),
+            _buildButton(mycounter, text: "6"),
+            _buildButton(mycounter,
                 text: "-",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
@@ -90,10 +91,10 @@ class HomePage extends StatelessWidget {
         ),
         Row(
           children: [
-            _buildButton(text: "1"),
-            _buildButton(text: "2"),
-            _buildButton(text: "3"),
-            _buildButton(
+            _buildButton(mycounter, text: "1"),
+            _buildButton(mycounter, text: "2"),
+            _buildButton(mycounter, text: "3"),
+            _buildButton(mycounter,
                 text: "+",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
@@ -101,23 +102,24 @@ class HomePage extends StatelessWidget {
         ),
         Row(
           children: [
-            _buildButton(
+            _buildButton(mycounter,
                 text: "%",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
-            _buildButton(text: "0"),
-            _buildButton(text: "."),
-            _buildButton(text: "=", buttonBgColor: orangeColor),
+            _buildButton(mycounter, text: "0"),
+            _buildButton(mycounter, text: "."),
+            _buildButton(mycounter, text: "=", buttonBgColor: orangeColor),
           ],
         )
       ],
     );
   }
 
-  Expanded _buildButton(
+  Expanded _buildButton(CounterBloc counterbloc,
       {String text = "0",
       Color textColor = Colors.white,
-      Color buttonBgColor = buttonColor}) {
+      Color buttonBgColor = buttonColor,
+      bool isInput = true}) {
     return Expanded(
         child: Container(
       margin: const EdgeInsets.all(8),
@@ -135,7 +137,11 @@ class HomePage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          if (isInput) {
+            counterbloc.changeInput("${counterbloc.state['input']}$text");
+          } else {}
+        },
       ),
     ));
   }

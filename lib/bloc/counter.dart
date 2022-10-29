@@ -5,7 +5,7 @@ class CounterBloc extends Cubit<Map<String, dynamic>> {
 
   void changeInput(String newInput) {
     emit({
-      "input": newInput,
+      "input": _validateInput(newInput),
       "output": state["output"],
     });
   }
@@ -16,12 +16,13 @@ class CounterBloc extends Cubit<Map<String, dynamic>> {
       "output": newOutput,
     });
   }
+
+  _validateInput(String input) {
+    String result = "";
+
+    // remove leading "0"
+    result = input.replaceAll(RegExp(r'^0+(?=.)'), '');
+
+    return result;
+  }
 }
-
-
-// class CounterBloc extends Cubit<int> {
-//   CounterBloc() : super(0);
-
-//   void add() => emit(state + 1);
-//   void remove() => emit(state - 1);
-// }
