@@ -30,19 +30,25 @@ class HomePage extends StatelessWidget {
               children: [
                 BlocSelector<CounterBloc, Map<String, dynamic>, String>(
                   selector: (state) => state['input'],
-                  builder: (context, state) => Text(
-                    state,
-                    style: const TextStyle(fontSize: 48, color: Colors.white),
-                  ),
+                  builder: (context, state) {
+                    debugPrint("build app input text");
+                    return Text(
+                      state,
+                      style: const TextStyle(fontSize: 48, color: Colors.white),
+                    );
+                  },
                 ),
                 const SizedBox(height: 20),
                 BlocSelector<CounterBloc, Map<String, dynamic>, int>(
                   selector: (state) => state['output'],
-                  builder: (context, state) => Text(
-                    "$state",
-                    style: TextStyle(
-                        fontSize: 48, color: Colors.white.withOpacity(0.7)),
-                  ),
+                  builder: (context, state) {
+                    debugPrint("build app output text");
+                    return Text(
+                      "$state",
+                      style: TextStyle(
+                          fontSize: 48, color: Colors.white.withOpacity(0.7)),
+                    );
+                  },
                 ),
               ],
             ),
