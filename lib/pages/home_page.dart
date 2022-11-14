@@ -39,12 +39,12 @@ class HomePage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 20),
-                BlocSelector<CounterBloc, Map<String, dynamic>, int>(
+                BlocSelector<CounterBloc, Map<String, dynamic>, String>(
                   selector: (state) => state['output'],
                   builder: (context, state) {
                     debugPrint("build app output text");
                     return Text(
-                      "$state",
+                      state,
                       style: TextStyle(
                           fontSize: 48, color: Colors.white.withOpacity(0.7)),
                     );
@@ -60,13 +60,11 @@ class HomePage extends StatelessWidget {
             _buildButton(mycounter,
                 text: "AC",
                 buttonBgColor: operatorColor,
-                textColor: orangeColor,
-                isInput: false),
+                textColor: orangeColor),
             _buildButton(mycounter,
                 text: "<",
                 buttonBgColor: operatorColor,
-                textColor: orangeColor,
-                isInput: false),
+                textColor: orangeColor),
             _buildButton(mycounter,
                 text: "", buttonBgColor: Colors.transparent),
             _buildButton(mycounter,
@@ -120,7 +118,6 @@ class HomePage extends StatelessWidget {
               mycounter,
               text: "=",
               buttonBgColor: orangeColor,
-              isInput: false,
             ),
           ],
         )
@@ -131,8 +128,7 @@ class HomePage extends StatelessWidget {
   Expanded _buildButton(CounterBloc counterbloc,
       {String text = "0",
       Color textColor = Colors.white,
-      Color buttonBgColor = buttonColor,
-      bool isInput = true}) {
+      Color buttonBgColor = buttonColor}) {
     return Expanded(
         child: Container(
       margin: const EdgeInsets.all(8),
@@ -151,19 +147,32 @@ class HomePage extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          if (isInput) {
-            counterbloc.changeInput("${counterbloc.state['input']}$text");
+          var inputState = counterbloc.state['input'];
+          // var arrText = text.split("");
+          if (_isNumeric(text)) {
+            counterbloc.changeInput("$inputState$text");
           } else {
             switch (text) {
               case "AC":
-                counterbloc.changeInput("0");
+                counterbloc.changeInput("");
                 break;
               case "<":
-                if (counterbloc.state['input'].length > 1) {
-                  counterbloc.changeInput(counterbloc.state['input']
-                      .substring(0, counterbloc.state['input'].length - 1));
+                if (inputState.length > 0) {
+                  counterbloc.changeInput(
+                      inputState.substring(0, inputState.length - 1));
                 } else {
-                  counterbloc.changeInput("0");
+                  counterbloc.changeInput("");
+                }
+                break;
+              case "=":
+                counterbloc.changeInput("");
+                break;
+              case "/":
+                if (inputState.length > 0) {
+                  var lastChar = inputState[inputState.length - 1];
+                  if (lastChar != text) {
+                    counterbloc.changeInput("$inputState$text");
+                  }
                 }
                 break;
               default:
@@ -172,5 +181,10 @@ class HomePage extends StatelessWidget {
         },
       ),
     ));
+  }
+
+  bool _isNumeric(String s) {
+    final numericRegex = RegExp(r'^-?(([0-9]*)|(([0-9]*)\.([0-9]*)))$');
+    return numericRegex.hasMatch(s);
   }
 }
