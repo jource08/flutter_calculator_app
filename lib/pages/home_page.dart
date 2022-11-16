@@ -170,7 +170,43 @@ class HomePage extends StatelessWidget {
               case "/":
                 if (inputState.length > 0) {
                   var lastChar = inputState[inputState.length - 1];
-                  if (lastChar != text) {
+                  if (lastChar != text && !_isNumeric(lastChar)) {
+                    counterbloc.changeInput(
+                        "${inputState.substring(0, inputState.length - 1)}$text");
+                  } else if (lastChar != "/") {
+                    counterbloc.changeInput("$inputState$text");
+                  }
+                }
+                break;
+              case "x":
+                if (inputState.length > 0) {
+                  var lastChar = inputState[inputState.length - 1];
+                  if (lastChar != text && !_isNumeric(lastChar)) {
+                    counterbloc.changeInput(
+                        "${inputState.substring(0, inputState.length - 1)}$text");
+                  } else if (lastChar != "x") {
+                    counterbloc.changeInput("$inputState$text");
+                  }
+                }
+                break;
+              case "-":
+                if (inputState.length > 0) {
+                  var lastChar = inputState[inputState.length - 1];
+                  if (lastChar != text && !_isNumeric(lastChar)) {
+                    counterbloc.changeInput(
+                        "${inputState.substring(0, inputState.length - 1)}$text");
+                  } else if (lastChar != "-") {
+                    counterbloc.changeInput("$inputState$text");
+                  }
+                }
+                break;
+              case "+":
+                if (inputState.length > 0) {
+                  var lastChar = inputState[inputState.length - 1];
+                  if (lastChar != text && !_isNumeric(lastChar)) {
+                    counterbloc.changeInput(
+                        "${inputState.substring(0, inputState.length - 1)}$text");
+                  } else if (lastChar != "+") {
                     counterbloc.changeInput("$inputState$text");
                   }
                 }
@@ -184,7 +220,7 @@ class HomePage extends StatelessWidget {
   }
 
   bool _isNumeric(String s) {
-    final numericRegex = RegExp(r'^-?(([0-9]*)|(([0-9]*)\.([0-9]*)))$');
+    final numericRegex = RegExp(r'^[0-9]+$');
     return numericRegex.hasMatch(s);
   }
 }
