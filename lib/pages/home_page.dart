@@ -211,6 +211,19 @@ class HomePage extends StatelessWidget {
                   }
                 }
                 break;
+              case ".":
+                if (inputState.length > 0) {
+                  var lastChar = inputState[inputState.length - 1];
+                  if (lastChar != text && !_isNumeric(lastChar)) {
+                    counterbloc.changeInput(
+                        "${inputState.substring(0, inputState.length - 1)}$text");
+                  } else if (lastChar != ".") {
+                    counterbloc.changeInput("$inputState$text");
+                  }
+                } else {
+                  counterbloc.changeInput("0$text");
+                }
+                break;
               default:
             }
           }
