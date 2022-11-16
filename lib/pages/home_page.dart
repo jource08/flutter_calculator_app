@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
             _buildButton(mycounter,
                 text: "", buttonBgColor: Colors.transparent),
             _buildButton(mycounter,
-                text: "/",
+                text: "÷",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
           ],
@@ -79,7 +79,7 @@ class HomePage extends StatelessWidget {
             _buildButton(mycounter, text: "8"),
             _buildButton(mycounter, text: "9"),
             _buildButton(mycounter,
-                text: "x",
+                text: "×",
                 buttonBgColor: operatorColor,
                 textColor: orangeColor),
           ],
@@ -167,24 +167,24 @@ class HomePage extends StatelessWidget {
               case "=":
                 counterbloc.changeInput("");
                 break;
-              case "/":
+              case "÷":
                 if (inputState.length > 0) {
                   var lastChar = inputState[inputState.length - 1];
                   if (lastChar != text && !_isNumeric(lastChar)) {
                     counterbloc.changeInput(
                         "${inputState.substring(0, inputState.length - 1)}$text");
-                  } else if (lastChar != "/") {
+                  } else if (lastChar != "÷") {
                     counterbloc.changeInput("$inputState$text");
                   }
                 }
                 break;
-              case "x":
+              case "×":
                 if (inputState.length > 0) {
                   var lastChar = inputState[inputState.length - 1];
                   if (lastChar != text && !_isNumeric(lastChar)) {
                     counterbloc.changeInput(
                         "${inputState.substring(0, inputState.length - 1)}$text");
-                  } else if (lastChar != "x") {
+                  } else if (lastChar != "×") {
                     counterbloc.changeInput("$inputState$text");
                   }
                 }
