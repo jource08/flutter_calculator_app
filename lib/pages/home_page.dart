@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_calculator_app/app_const/colors.dart';
 import 'package:flutter_calculator_app/bloc/counter.dart';
+import 'package:flutter_calculator_app/widgets/button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -16,7 +17,15 @@ class HomePage extends StatelessWidget {
   }
 
   Column _buildAppBody(BuildContext context) {
+    debugPrint('render app');
     CounterBloc mycounter = context.read<CounterBloc>();
+    String inputState = mycounter.state['input'];
+
+    String lastChar = "";
+    if (inputState.isNotEmpty) {
+      lastChar = inputState[inputState.length - 1];
+    }
+
     return Column(
       children: [
         Expanded(
@@ -57,179 +66,162 @@ class HomePage extends StatelessWidget {
         // button area
         Row(
           children: [
-            _buildButton(mycounter,
-                text: "AC",
-                buttonBgColor: operatorColor,
-                textColor: orangeColor),
-            _buildButton(mycounter,
-                text: "<",
-                buttonBgColor: operatorColor,
-                textColor: orangeColor),
-            _buildButton(mycounter,
-                text: "", buttonBgColor: Colors.transparent),
-            _buildButton(mycounter,
-                text: "÷",
-                buttonBgColor: operatorColor,
-                textColor: orangeColor),
+            CalculatorButton(
+              text: "AC",
+              buttonBgColor: operatorColor,
+              textColor: orangeColor,
+              buttonTapped: () {
+                inputState = "";
+                mycounter.changeInput(inputState);
+              },
+            ),
+            CalculatorButton(
+              text: "<",
+              buttonBgColor: operatorColor,
+              textColor: orangeColor,
+              buttonTapped: () {
+                if (inputState.length > 0) {
+                  inputState = inputState.substring(0, inputState.length - 1);
+                  mycounter.changeInput(inputState);
+                } else {
+                  mycounter.changeInput("");
+                }
+              },
+            ),
+            CalculatorButton(
+              text: "",
+              buttonBgColor: Colors.transparent,
+              buttonTapped: () {},
+            ),
+            CalculatorButton(
+              text: "÷",
+              buttonBgColor: operatorColor,
+              textColor: orangeColor,
+              buttonTapped: () {},
+            ),
           ],
         ),
         Row(
           children: [
-            _buildButton(mycounter, text: "7"),
-            _buildButton(mycounter, text: "8"),
-            _buildButton(mycounter, text: "9"),
-            _buildButton(mycounter,
-                text: "×",
-                buttonBgColor: operatorColor,
-                textColor: orangeColor),
+            CalculatorButton(
+              text: "7",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "7");
+              },
+            ),
+            CalculatorButton(
+              text: "8",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "8");
+              },
+            ),
+            CalculatorButton(
+              text: "9",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "9");
+              },
+            ),
+            CalculatorButton(
+              text: "x",
+              buttonBgColor: operatorColor,
+              textColor: orangeColor,
+              buttonTapped: () {},
+            ),
           ],
         ),
         Row(
           children: [
-            _buildButton(mycounter, text: "4"),
-            _buildButton(mycounter, text: "5"),
-            _buildButton(mycounter, text: "6"),
-            _buildButton(mycounter,
-                text: "-",
-                buttonBgColor: operatorColor,
-                textColor: orangeColor),
+            CalculatorButton(
+              text: "4",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "4");
+              },
+            ),
+            CalculatorButton(
+              text: "5",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "5");
+              },
+            ),
+            CalculatorButton(
+              text: "6",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "6");
+              },
+            ),
+            CalculatorButton(
+              text: "-",
+              buttonBgColor: operatorColor,
+              textColor: orangeColor,
+              buttonTapped: () {},
+            ),
           ],
         ),
         Row(
           children: [
-            _buildButton(mycounter, text: "1"),
-            _buildButton(mycounter, text: "2"),
-            _buildButton(mycounter, text: "3"),
-            _buildButton(mycounter,
-                text: "+",
-                buttonBgColor: operatorColor,
-                textColor: orangeColor),
+            CalculatorButton(
+              text: "1",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "1");
+              },
+            ),
+            CalculatorButton(
+              text: "2",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "2");
+              },
+            ),
+            CalculatorButton(
+              text: "3",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "3");
+              },
+            ),
+            CalculatorButton(
+              text: "+",
+              buttonBgColor: operatorColor,
+              textColor: orangeColor,
+              buttonTapped: () {},
+            ),
           ],
         ),
         Row(
           children: [
-            _buildButton(mycounter,
-                text: "%",
-                buttonBgColor: operatorColor,
-                textColor: orangeColor),
-            _buildButton(mycounter, text: "0"),
-            _buildButton(mycounter, text: "."),
-            _buildButton(
-              mycounter,
+            CalculatorButton(
+              text: "%",
+              buttonBgColor: operatorColor,
+              textColor: orangeColor,
+              buttonTapped: () {},
+            ),
+            CalculatorButton(
+              text: "0",
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "0");
+              },
+            ),
+            CalculatorButton(
+              text: ".",
+              buttonTapped: () {
+                // if (inputState.isNotEmpty) {
+                if (lastChar != "." && !_isNumeric(lastChar)) {
+                  mycounter.changeInput(inputState += ".");
+                } else if (lastChar != ".") {
+                  // mycounter.changeInput("$inputState$text");
+
+                } else if (lastChar == "") {
+                  mycounter.changeInput("0.");
+                }
+              },
+            ),
+            CalculatorButton(
               text: "=",
               buttonBgColor: orangeColor,
+              buttonTapped: () {},
             ),
           ],
         )
       ],
     );
-  }
-
-  Expanded _buildButton(CounterBloc counterbloc,
-      {String text = "0",
-      Color textColor = Colors.white,
-      Color buttonBgColor = buttonColor}) {
-    return Expanded(
-        child: Container(
-      margin: const EdgeInsets.all(8),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(22),
-            backgroundColor: buttonBgColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12))),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 18,
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          var inputState = counterbloc.state['input'];
-          // var arrText = text.split("");
-          if (_isNumeric(text)) {
-            counterbloc.changeInput("$inputState$text");
-          } else {
-            switch (text) {
-              case "AC":
-                counterbloc.changeInput("");
-                break;
-              case "<":
-                if (inputState.length > 0) {
-                  counterbloc.changeInput(
-                      inputState.substring(0, inputState.length - 1));
-                } else {
-                  counterbloc.changeInput("");
-                }
-                break;
-              case "=":
-                counterbloc.changeInput("");
-                break;
-              case "÷":
-                if (inputState.length > 0) {
-                  var lastChar = inputState[inputState.length - 1];
-                  if (lastChar != text && !_isNumeric(lastChar)) {
-                    counterbloc.changeInput(
-                        "${inputState.substring(0, inputState.length - 1)}$text");
-                  } else if (lastChar != "÷") {
-                    counterbloc.changeInput("$inputState$text");
-                  }
-                }
-                break;
-              case "×":
-                if (inputState.length > 0) {
-                  var lastChar = inputState[inputState.length - 1];
-                  if (lastChar != text && !_isNumeric(lastChar)) {
-                    counterbloc.changeInput(
-                        "${inputState.substring(0, inputState.length - 1)}$text");
-                  } else if (lastChar != "×") {
-                    counterbloc.changeInput("$inputState$text");
-                  }
-                }
-                break;
-              case "-":
-                if (inputState.length > 0) {
-                  var lastChar = inputState[inputState.length - 1];
-                  if (lastChar != text && !_isNumeric(lastChar)) {
-                    counterbloc.changeInput(
-                        "${inputState.substring(0, inputState.length - 1)}$text");
-                  } else if (lastChar != "-") {
-                    counterbloc.changeInput("$inputState$text");
-                  }
-                }
-                break;
-              case "+":
-                if (inputState.length > 0) {
-                  var lastChar = inputState[inputState.length - 1];
-                  if (lastChar != text && !_isNumeric(lastChar)) {
-                    counterbloc.changeInput(
-                        "${inputState.substring(0, inputState.length - 1)}$text");
-                  } else if (lastChar != "+") {
-                    counterbloc.changeInput("$inputState$text");
-                  }
-                }
-                break;
-              case ".":
-                if (inputState.length > 0) {
-                  var lastChar = inputState[inputState.length - 1];
-                  if (lastChar != text && !_isNumeric(lastChar)) {
-                    counterbloc.changeInput(
-                        "${inputState.substring(0, inputState.length - 1)}$text");
-                  } else if (lastChar != ".") {
-                    counterbloc.changeInput("$inputState$text");
-                  }
-                } else {
-                  counterbloc.changeInput("0$text");
-                }
-                break;
-              default:
-            }
-          }
-        },
-      ),
-    ));
   }
 
   bool _isNumeric(String s) {
