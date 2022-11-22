@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_calculator_app/app_const/colors.dart';
 import 'package:flutter_calculator_app/bloc/counter.dart';
 import 'package:flutter_calculator_app/widgets/button.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -73,6 +74,7 @@ class HomePage extends StatelessWidget {
               buttonTapped: () {
                 inputState = "";
                 mycounter.changeInput(inputState);
+                mycounter.changeOutput("");
               },
             ),
             CalculatorButton(
@@ -80,7 +82,7 @@ class HomePage extends StatelessWidget {
               buttonBgColor: operatorColor,
               textColor: orangeColor,
               buttonTapped: () {
-                if (inputState.length > 0) {
+                if (inputState.isNotEmpty) {
                   inputState = inputState.substring(0, inputState.length - 1);
                   mycounter.changeInput(inputState);
                 } else {
@@ -97,7 +99,9 @@ class HomePage extends StatelessWidget {
               text: "÷",
               buttonBgColor: operatorColor,
               textColor: orangeColor,
-              buttonTapped: () {},
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "÷");
+              },
             ),
           ],
         ),
@@ -125,7 +129,9 @@ class HomePage extends StatelessWidget {
               text: "x",
               buttonBgColor: operatorColor,
               textColor: orangeColor,
-              buttonTapped: () {},
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "x");
+              },
             ),
           ],
         ),
@@ -153,7 +159,9 @@ class HomePage extends StatelessWidget {
               text: "-",
               buttonBgColor: operatorColor,
               textColor: orangeColor,
-              buttonTapped: () {},
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "-");
+              },
             ),
           ],
         ),
@@ -181,7 +189,9 @@ class HomePage extends StatelessWidget {
               text: "+",
               buttonBgColor: operatorColor,
               textColor: orangeColor,
-              buttonTapped: () {},
+              buttonTapped: () {
+                mycounter.changeInput(inputState += "+");
+              },
             ),
           ],
         ),
@@ -202,13 +212,13 @@ class HomePage extends StatelessWidget {
             CalculatorButton(
               text: ".",
               buttonTapped: () {
-                // if (inputState.isNotEmpty) {
-                if (lastChar != "." && !_isNumeric(lastChar)) {
-                  mycounter.changeInput(inputState += ".");
-                } else if (lastChar != ".") {
-                  // mycounter.changeInput("$inputState$text");
-
-                } else if (lastChar == "") {
+                if (inputState.isNotEmpty) {
+                  if (lastChar != "." || !_isNumeric(lastChar)) {
+                    mycounter.changeInput(inputState);
+                  } else {
+                    mycounter.changeInput(inputState += ".");
+                  }
+                } else {
                   mycounter.changeInput("0.");
                 }
               },
@@ -216,7 +226,13 @@ class HomePage extends StatelessWidget {
             CalculatorButton(
               text: "=",
               buttonBgColor: orangeColor,
-              buttonTapped: () {},
+              buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  debugPrint(
+                      "_equalPressed(inputState) ${_equalPressed(inputState)}");
+                  mycounter.changeOutput(_equalPressed(inputState));
+                }
+              },
             ),
           ],
         )
@@ -227,5 +243,23 @@ class HomePage extends StatelessWidget {
   bool _isNumeric(String s) {
     final numericRegex = RegExp(r'^[0-9]+$');
     return numericRegex.hasMatch(s);
+  }
+
+  String _equalPressed(String userInput) {
+    String finaluserinput = userInput;
+    finaluserinput = userInput.replaceAll('x', '*').replaceAll('÷', "/");
+
+    Parser p = Parser();
+    Expression exp = p.parse(finaluserinput);
+    ContextModel cm = ContextModel();
+    double eval = exp.evaluate(EvaluationType.REAL, cm);
+    List arrVal = eval.toString().split(".");
+    String res = "";
+    if (int.parse(arrVal[1]) > 0) {
+      res = eval.toString();
+    } else {
+      res = eval.toInt().toString();
+    }
+    return res;
   }
 }

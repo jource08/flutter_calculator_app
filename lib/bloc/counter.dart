@@ -10,7 +10,7 @@ class CounterBloc extends Cubit<Map<String, dynamic>> {
     });
   }
 
-  void changeOutput(int newOutput) {
+  void changeOutput(String newOutput) {
     emit({
       "input": state["input"],
       "output": newOutput,
