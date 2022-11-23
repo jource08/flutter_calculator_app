@@ -21,11 +21,9 @@ class HomePage extends StatelessWidget {
     debugPrint('render app');
     CounterBloc mycounter = context.read<CounterBloc>();
     String inputState = mycounter.state['input'];
+    List operator = ["÷", "x", "-", "+"];
 
     String lastChar = "";
-    if (inputState.isNotEmpty) {
-      lastChar = inputState[inputState.length - 1];
-    }
 
     return Column(
       children: [
@@ -213,10 +211,20 @@ class HomePage extends StatelessWidget {
               text: ".",
               buttonTapped: () {
                 if (inputState.isNotEmpty) {
-                  if (lastChar != "." || !_isNumeric(lastChar)) {
-                    mycounter.changeInput(inputState);
-                  } else {
+                  lastChar = inputState[inputState.length - 1];
+
+                  // validate dot input for multiple block of number
+                  for (var op in operator) {
+                    var _n = inputState.split(op);
+                    if (_n.length > 1 && _isDouble(_n[1])) {
+                      mycounter.changeInput(inputState += ".");
+                    }
+                  }
+
+                  if (_isDouble(inputState)) {
                     mycounter.changeInput(inputState += ".");
+                  } else {
+                    mycounter.changeInput(inputState);
                   }
                 } else {
                   mycounter.changeInput("0.");
@@ -228,8 +236,6 @@ class HomePage extends StatelessWidget {
               buttonBgColor: orangeColor,
               buttonTapped: () {
                 if (inputState.isNotEmpty) {
-                  debugPrint(
-                      "_equalPressed(inputState) ${_equalPressed(inputState)}");
                   mycounter.changeOutput(_equalPressed(inputState));
                 }
               },
@@ -243,6 +249,16 @@ class HomePage extends StatelessWidget {
   bool _isNumeric(String s) {
     final numericRegex = RegExp(r'^[0-9]+$');
     return numericRegex.hasMatch(s);
+  }
+
+  bool _isDouble(String s) {
+    bool valid = true;
+    try {
+      double.parse("$s.");
+    } catch (e) {
+      valid = false;
+    }
+    return valid;
   }
 
   String _equalPressed(String userInput) {
