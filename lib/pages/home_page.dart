@@ -98,7 +98,16 @@ class HomePage extends StatelessWidget {
               buttonBgColor: operatorColor,
               textColor: orangeColor,
               buttonTapped: () {
-                mycounter.changeInput(inputState += "÷");
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar != "÷" && _isNumeric(lastChar)) {
+                    mycounter.changeInput(inputState += "÷");
+                  }
+                  if (lastChar != "%" && !_isNumeric(lastChar)) {
+                    inputState = inputState.substring(0, inputState.length - 1);
+                    mycounter.changeInput(inputState += "÷");
+                  }
+                }
               },
             ),
           ],
@@ -108,18 +117,36 @@ class HomePage extends StatelessWidget {
             CalculatorButton(
               text: "7",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "7");
               },
             ),
             CalculatorButton(
               text: "8",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "8");
               },
             ),
             CalculatorButton(
               text: "9",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "9");
               },
             ),
@@ -128,7 +155,16 @@ class HomePage extends StatelessWidget {
               buttonBgColor: operatorColor,
               textColor: orangeColor,
               buttonTapped: () {
-                mycounter.changeInput(inputState += "x");
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar != "x" && _isNumeric(lastChar)) {
+                    mycounter.changeInput(inputState += "x");
+                  }
+                  if (lastChar != "%" && !_isNumeric(lastChar)) {
+                    inputState = inputState.substring(0, inputState.length - 1);
+                    mycounter.changeInput(inputState += "x");
+                  }
+                }
               },
             ),
           ],
@@ -138,18 +174,36 @@ class HomePage extends StatelessWidget {
             CalculatorButton(
               text: "4",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "4");
               },
             ),
             CalculatorButton(
               text: "5",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "5");
               },
             ),
             CalculatorButton(
               text: "6",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "6");
               },
             ),
@@ -158,7 +212,16 @@ class HomePage extends StatelessWidget {
               buttonBgColor: operatorColor,
               textColor: orangeColor,
               buttonTapped: () {
-                mycounter.changeInput(inputState += "-");
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar != "-" && _isNumeric(lastChar)) {
+                    mycounter.changeInput(inputState += "-");
+                  }
+                  if (lastChar != "%" && !_isNumeric(lastChar)) {
+                    inputState = inputState.substring(0, inputState.length - 1);
+                    mycounter.changeInput(inputState += "-");
+                  }
+                }
               },
             ),
           ],
@@ -168,18 +231,36 @@ class HomePage extends StatelessWidget {
             CalculatorButton(
               text: "1",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "1");
               },
             ),
             CalculatorButton(
               text: "2",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "2");
               },
             ),
             CalculatorButton(
               text: "3",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "3");
               },
             ),
@@ -188,7 +269,16 @@ class HomePage extends StatelessWidget {
               buttonBgColor: operatorColor,
               textColor: orangeColor,
               buttonTapped: () {
-                mycounter.changeInput(inputState += "+");
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar != "+" && _isNumeric(lastChar)) {
+                    mycounter.changeInput(inputState += "+");
+                  }
+                  if (lastChar != "%" && !_isNumeric(lastChar)) {
+                    inputState = inputState.substring(0, inputState.length - 1);
+                    mycounter.changeInput(inputState += "+");
+                  }
+                }
               },
             ),
           ],
@@ -199,11 +289,25 @@ class HomePage extends StatelessWidget {
               text: "%",
               buttonBgColor: operatorColor,
               textColor: orangeColor,
-              buttonTapped: () {},
+              buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar != "%" && _isNumeric(lastChar) ||
+                      lastChar == ".") {
+                    mycounter.changeInput(inputState += "%");
+                  }
+                }
+              },
             ),
             CalculatorButton(
               text: "0",
               buttonTapped: () {
+                if (inputState.isNotEmpty) {
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar == "%") {
+                    inputState += "x";
+                  }
+                }
                 mycounter.changeInput(inputState += "0");
               },
             ),
@@ -215,8 +319,8 @@ class HomePage extends StatelessWidget {
 
                   // validate dot input for multiple block of number
                   for (var op in operator) {
-                    var _n = inputState.split(op);
-                    if (_n.length > 1 && _isDouble(_n[1])) {
+                    var n = inputState.split(op);
+                    if (n.length > 1 && _isDouble(n[1])) {
                       mycounter.changeInput(inputState += ".");
                     }
                   }
@@ -263,7 +367,10 @@ class HomePage extends StatelessWidget {
 
   String _equalPressed(String userInput) {
     String finaluserinput = userInput;
-    finaluserinput = userInput.replaceAll('x', '*').replaceAll('÷', "/");
+    finaluserinput = userInput
+        .replaceAll('x', '*')
+        .replaceAll('÷', "/")
+        .replaceAll("%", "/100");
 
     Parser p = Parser();
     Expression exp = p.parse(finaluserinput);
