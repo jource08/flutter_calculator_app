@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_calculator_app/app_const/colors.dart';
 import 'package:flutter_calculator_app/bloc/counter.dart';
 import 'package:flutter_calculator_app/widgets/button.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 class HomePage extends StatelessWidget {
@@ -214,7 +215,8 @@ class HomePage extends StatelessWidget {
               buttonTapped: () {
                 if (inputState.isNotEmpty) {
                   lastChar = inputState[inputState.length - 1];
-                  if (lastChar != "-" && _isNumeric(lastChar)) {
+                  if (lastChar == "%" ||
+                      lastChar != "-" && _isNumeric(lastChar)) {
                     mycounter.changeInput(inputState += "-");
                   }
                   if (lastChar != "%" && !_isNumeric(lastChar)) {
@@ -340,7 +342,14 @@ class HomePage extends StatelessWidget {
               buttonBgColor: orangeColor,
               buttonTapped: () {
                 if (inputState.isNotEmpty) {
-                  mycounter.changeOutput(_equalPressed(inputState));
+                  lastChar = inputState[inputState.length - 1];
+                  if (lastChar != "%" && _isNumeric(lastChar)) {
+                    mycounter.changeOutput(_equalPressed(inputState));
+                  } else {
+                    _callWarningToast();
+                  }
+                } else {
+                  _callWarningToast();
                 }
               },
             ),
@@ -348,6 +357,18 @@ class HomePage extends StatelessWidget {
         )
       ],
     );
+  }
+
+  void _callWarningToast() {
+    Fluttertoast.cancel();
+    Fluttertoast.showToast(
+        msg: "Invalid input format used.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.white.withOpacity(0.4),
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   bool _isNumeric(String s) {
