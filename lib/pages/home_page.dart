@@ -1,3 +1,4 @@
+import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_calculator_app/app_const/colors.dart';
@@ -23,6 +24,8 @@ class HomePage extends StatelessWidget {
     CounterBloc mycounter = context.read<CounterBloc>();
     String inputState = mycounter.state['input'];
     List operator = ["÷", "x", "-", "+"];
+    final TextEditingController inputConroller = TextEditingController();
+    final TextInputFocusNode focusNode = TextInputFocusNode();
 
     String lastChar = "";
 
@@ -41,13 +44,30 @@ class HomePage extends StatelessWidget {
                   selector: (state) => state['input'],
                   builder: (context, state) {
                     debugPrint("build app input text");
-                    return Text(
-                      state,
+                    inputConroller.text = state;
+                    inputConroller.selection = TextSelection.collapsed(
+                        offset: inputConroller.text.length);
+                    // _inputConroller.
+                    return TextField(
+                      controller: inputConroller,
+                      autofocus: true,
                       style: const TextStyle(fontSize: 48, color: Colors.white),
+                      focusNode: focusNode..debugLabel = 'CustomTextField',
                     );
                   },
                 ),
                 const SizedBox(height: 20),
+                // BlocSelector<CounterBloc, Map<String, dynamic>, String>(
+                //   selector: (state) => state['input'],
+                //   builder: (context, state) {
+                //     debugPrint("build app input text");
+                //     return Text(
+                //       state,
+                //       style: const TextStyle(fontSize: 48, color: Colors.white),
+                //     );
+                //   },
+                // ),
+                // const SizedBox(height: 20),
                 BlocSelector<CounterBloc, Map<String, dynamic>, String>(
                   selector: (state) => state['output'],
                   builder: (context, state) {
