@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
     debugPrint('render app');
     CounterBloc mycounter = context.read<CounterBloc>();
     String inputState = mycounter.state['input'];
-    List operator = ["÷", "x", "-", "+"];
+    List operators = ["÷", "x", "-", "+"];
     final TextEditingController inputConroller = TextEditingController();
     final TextInputFocusNode focusNode = TextInputFocusNode();
 
@@ -46,22 +46,44 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 BlocSelector<CounterBloc, Map<String, dynamic>, String>(
-                  selector: (state) => state['input'],
+                  selector: (state) => inputState,
                   builder: (context, state) {
-                    debugPrint("build app input text");
-                    inputConroller.text = state;
-                    inputConroller.selection = TextSelection.collapsed(
-                        offset: inputConroller.text.length);
                     // _inputConroller.
-                    return TextField(
-                      textAlign: TextAlign.end,
-                      controller: inputConroller,
-                      autofocus: true,
-                      style: const TextStyle(fontSize: 48, color: Colors.white),
-                      focusNode: focusNode..debugLabel = 'CustomTextField',
-                      onChanged: (value) {
+                    return BlocListener<CounterBloc, Map<String, dynamic>>(
+                      listener: (context, state) {
+                        debugPrint("build app input text");
                         FocusScope.of(context).requestFocus(focusNode);
+                        inputConroller.text = inputState;
+                        inputConroller.selection = TextSelection.collapsed(
+                            offset: inputConroller.text.length);
                       },
+                      listenWhen: (previous, current) {
+                        // incoming input validation goes here
+                        bool v = _isValidInput(current['input']);
+                        if (!v) {
+                          _callWarningToast();
+                        }
+                        return v;
+                      },
+                      child: TextField(
+                        textAlign: TextAlign.end,
+                        controller: inputConroller,
+                        autofocus: true,
+                        style:
+                            const TextStyle(fontSize: 48, color: Colors.white),
+                        focusNode: focusNode..debugLabel = 'CustomTextField',
+                        onChanged: (value) {
+                          FocusScope.of(context).requestFocus(focusNode);
+                          // inputConroller.text = value;
+                          if (_isValidInput(value)) {
+                            inputState = value;
+                            inputConroller.text = inputState;
+                          } else {
+                            debugPrint("eh");
+                            _callWarningToast();
+                          }
+                        },
+                      ),
                     );
                   },
                 ),
@@ -103,6 +125,7 @@ class HomePage extends StatelessWidget {
                 inputState = "";
                 mycounter.changeInput(inputState);
                 mycounter.changeOutput("");
+                inputConroller.text = inputState;
               },
             ),
             CalculatorButton(
@@ -116,6 +139,7 @@ class HomePage extends StatelessWidget {
                 } else {
                   mycounter.changeInput("");
                 }
+                inputConroller.text = inputState;
               },
             ),
             CalculatorButton(
@@ -128,14 +152,16 @@ class HomePage extends StatelessWidget {
               buttonBgColor: operatorColor,
               textColor: orangeColor,
               buttonTapped: () {
+                const opr = "÷";
                 if (inputState.isNotEmpty) {
                   lastChar = inputState[inputState.length - 1];
-                  if (lastChar != "÷" && _isNumeric(lastChar)) {
-                    mycounter.changeInput(inputState += "÷");
+                  if (lastChar == "%" ||
+                      lastChar != opr && _isNumeric(lastChar)) {
+                    mycounter.changeInput(inputState += opr);
                   }
                   if (lastChar != "%" && !_isNumeric(lastChar)) {
                     inputState = inputState.substring(0, inputState.length - 1);
-                    mycounter.changeInput(inputState += "÷");
+                    mycounter.changeInput(inputState += opr);
                   }
                 }
               },
@@ -154,6 +180,7 @@ class HomePage extends StatelessWidget {
                   }
                 }
                 mycounter.changeInput(inputState += "7");
+                inputConroller.text = inputState;
               },
             ),
             CalculatorButton(
@@ -166,6 +193,7 @@ class HomePage extends StatelessWidget {
                   }
                 }
                 mycounter.changeInput(inputState += "8");
+                inputConroller.text = inputState;
               },
             ),
             CalculatorButton(
@@ -178,6 +206,7 @@ class HomePage extends StatelessWidget {
                   }
                 }
                 mycounter.changeInput(inputState += "9");
+                inputConroller.text = inputState;
               },
             ),
             CalculatorButton(
@@ -185,14 +214,16 @@ class HomePage extends StatelessWidget {
               buttonBgColor: operatorColor,
               textColor: orangeColor,
               buttonTapped: () {
+                const opr = "x";
                 if (inputState.isNotEmpty) {
                   lastChar = inputState[inputState.length - 1];
-                  if (lastChar != "x" && _isNumeric(lastChar)) {
-                    mycounter.changeInput(inputState += "x");
+                  if (lastChar == "%" ||
+                      lastChar != opr && _isNumeric(lastChar)) {
+                    mycounter.changeInput(inputState += opr);
                   }
                   if (lastChar != "%" && !_isNumeric(lastChar)) {
                     inputState = inputState.substring(0, inputState.length - 1);
-                    mycounter.changeInput(inputState += "x");
+                    mycounter.changeInput(inputState += opr);
                   }
                 }
               },
@@ -349,7 +380,7 @@ class HomePage extends StatelessWidget {
                   lastChar = inputState[inputState.length - 1];
 
                   // validate dot input for multiple block of number
-                  for (var op in operator) {
+                  for (var op in operators) {
                     var n = inputState.split(op);
                     if (n.length > 1 && _isDouble(n[1])) {
                       mycounter.changeInput(inputState += ".");
@@ -386,6 +417,26 @@ class HomePage extends StatelessWidget {
         )
       ],
     );
+  }
+
+  bool _isValidInput(String inputState) {
+    bool v = true;
+    if (inputState.isNotEmpty) {
+      // List matchOperator(String currInput) => operators
+      //     .firstWhere((element) => element == currInput);
+      // if (!_isNumeric(inputState) &&
+      //     matchOperator(inputState).isEmpty) {
+      //   v = false;
+      // }
+      try {
+        _equalPressed("${inputState}1");
+        debugPrint('ok');
+      } catch (e) {
+        debugPrint('warning');
+        v = false;
+      }
+    }
+    return v;
   }
 
   void _callWarningToast() {
