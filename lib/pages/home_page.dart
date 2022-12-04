@@ -49,6 +49,7 @@ class HomePage extends StatelessWidget {
                         offset: inputConroller.text.length);
                     // _inputConroller.
                     return TextField(
+                      textDirection: TextDirection.rtl,
                       controller: inputConroller,
                       autofocus: true,
                       style: const TextStyle(fontSize: 48, color: Colors.white),
@@ -363,7 +364,7 @@ class HomePage extends StatelessWidget {
               buttonTapped: () {
                 if (inputState.isNotEmpty) {
                   lastChar = inputState[inputState.length - 1];
-                  if (lastChar != "%" && _isNumeric(lastChar)) {
+                  if (lastChar == "%" || _isNumeric(lastChar)) {
                     mycounter.changeOutput(_equalPressed(inputState));
                   } else {
                     _callWarningToast();
@@ -419,8 +420,27 @@ class HomePage extends StatelessWidget {
     double eval = exp.evaluate(EvaluationType.REAL, cm);
     List arrVal = eval.toString().split(".");
     String res = "";
+    bool repeatedDec = false;
+    int repeatedDecIndex = 0;
+
+    // round repeating decimal
     if (int.parse(arrVal[1]) > 0) {
-      res = eval.toString();
+      List decList = int.parse(arrVal[1]).toString().split("");
+      for (var i = 0; i < decList.length; i++) {
+        if (i > 0 && i < decList.length - 1) {
+          if (decList[i - 1] == decList[i] && decList[i] == decList[i + 1]) {
+            if (!repeatedDec && repeatedDecIndex == 0) {
+              repeatedDec = true;
+              repeatedDecIndex = i;
+            }
+          }
+        }
+      }
+      if (repeatedDec) {
+        res = eval.toStringAsFixed(repeatedDecIndex - 1);
+      } else {
+        res = eval.toString();
+      }
     } else {
       res = eval.toInt().toString();
     }
