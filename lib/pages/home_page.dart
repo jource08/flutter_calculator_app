@@ -13,7 +13,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: Text("AA")),
+      appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.menu),
+          )),
       backgroundColor: Colors.black,
       body: _buildAppBody(context),
     );
@@ -49,11 +54,14 @@ class HomePage extends StatelessWidget {
                         offset: inputConroller.text.length);
                     // _inputConroller.
                     return TextField(
-                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.end,
                       controller: inputConroller,
                       autofocus: true,
                       style: const TextStyle(fontSize: 48, color: Colors.white),
                       focusNode: focusNode..debugLabel = 'CustomTextField',
+                      onChanged: (value) {
+                        FocusScope.of(context).requestFocus(focusNode);
+                      },
                     );
                   },
                 ),
